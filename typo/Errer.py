@@ -7,7 +7,7 @@ from typo.keyboardlayouts import en_default
 class StrErrer:
     """
     This class simulates typographical errors on String data types. Multiple error methods can be chained after
-    initializing the class.     
+    initializing the class.
 
     Attributes:
         result (str): Output of the the typographical error.
@@ -27,7 +27,7 @@ class StrErrer:
 
     def char_swap(self):
         """
-        Swaps two ramdom consecutive word characters (regex \\w) in the string. The replacing character retains the case
+        Swaps two random consecutive word characters (regex \\w) in the string. The replacing character retains the case
         of replaced character. For example, after character swap, 'Happy' may become 'Ahppy'. Here, H and a are
         swapped, and those also retain each other's case. :return: An instance of the StrErrer class.
         """
@@ -285,7 +285,7 @@ class DateErrer:
     # swaps month and date, and returns a valid date
     def date_month_swap(self):
         """
-        Swaps the day and month of the date if the value so of the day is less than or equal to 12.
+        Swaps the day and month of the date if the value of the day is less than or equal to 12.
         :return: An instance of the DateErrer class.
         """
         if self.result.day < 13:

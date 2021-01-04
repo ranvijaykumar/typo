@@ -50,8 +50,8 @@ class TestStrErrer(TestCase):
         self.assertEqual(typo.StrErrer('', seed=1).similar_char().result, '')
         self.assertEqual(typo.StrErrer('Z', seed=1).similar_char().result, '2')
         self.assertEqual(typo.StrErrer('2021', seed=1).similar_char().result, '2D21')
-        self.assertEqual(typo.StrErrer('Hello world! Happy new year', seed=1).similar_char().result,
-                         'Hell0 world! Happy new year')
+        self.assertEqual(typo.StrErrer('Hello world! Happy new year 2021.', seed=1).similar_char().result,
+                         'Hell0 world! Happy new year 2021.')
         self.assertEqual(typo.StrErrer('To be or not to be that is the question.', seed=2).similar_char().result,
                          'To be or not to be that is the questIon.')
 
@@ -60,8 +60,8 @@ class TestStrErrer(TestCase):
         self.assertEqual(typo.StrErrer(' ', seed=1).skipped_space().result, '')
         self.assertEqual(typo.StrErrer('  ', seed=1).skipped_space().result, ' ')
         self.assertEqual(typo.StrErrer('Hello world!', seed=1).skipped_space().result, 'Helloworld!')
-        self.assertEqual(typo.StrErrer('Hello world! Happy new year', seed=5).skipped_space().result,
-                         'Hello world! Happynew year')
+        self.assertEqual(typo.StrErrer('Hello world! Happy new year 2021.', seed=5).skipped_space().result,
+                         'Hello world! Happy new year2021.')
 
     def test_random_space(self):
         self.assertEqual(typo.StrErrer('', seed=1).random_space().result, '')
@@ -70,8 +70,8 @@ class TestStrErrer(TestCase):
         self.assertEqual(typo.StrErrer('ab', seed=5).random_space().result, 'a b')
         self.assertEqual(typo.StrErrer('abcdefgh', seed=6).random_space().result, 'a bcdefgh')
         self.assertEqual(typo.StrErrer('2021', seed=5).random_space().result, '20 21')
-        self.assertEqual(typo.StrErrer('Hello world! Happy new year', seed=634).random_space().result,
-                         'Hell o world! Happy new year')
+        self.assertEqual(typo.StrErrer('Hello world! Happy new year 2021.', seed=634).random_space().result,
+                         'Hell o world! Happy new year 2021.')
 
     def test_repeated_char(self):
         self.assertEqual(typo.StrErrer('', seed=1).repeated_char().result, '')
@@ -89,10 +89,10 @@ class TestStrErrer(TestCase):
         self.assertEqual(typo.StrErrer('aa', seed=1).unichar().result, 'a')
         self.assertEqual(typo.StrErrer('apple', seed=1).unichar().result, 'aple')
         self.assertEqual(typo.StrErrer('aaabbbccc', seed=5).unichar().result, 'aaabbbcc')
-        self.assertEqual(typo.StrErrer('Hello world! Happy new year', seed=1).unichar().result,
-                         'Helo world! Happy new year')
-        self.assertEqual(typo.StrErrer('Hello world! Happy new year', seed=5).unichar().result,
-                         'Hello world! Hapy new year')
+        self.assertEqual(typo.StrErrer('Hello world! Happy new year 2021.', seed=1).unichar().result,
+                         'Helo world! Happy new year 2021.')
+        self.assertEqual(typo.StrErrer('Hello world! Happy new year 2021.', seed=5).unichar().result,
+                         'Hello world! Hapy new year 2021.')
 
 
 class TestIntErrer(TestCase):
