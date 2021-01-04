@@ -5,15 +5,32 @@ from typo.keyboardlayouts import en_default
 
 
 class StrErrer:
+    """
+    This class simulates typographical errors on String data types. Multiple error methods can be chained after
+    initializing the class.     
+
+    Attributes:
+        result (str): Output of the the typographical error.
+    """
+
     def __init__(self, value, seed=None):
+        """
+        The constructor for the StrErrer class.
+        :param value: The string to alter with error.
+        :param seed: Seed for random value generation.
+        """
         random.seed(seed)
         self.result = value
 
     def __repr__(self):
         return self.result
 
-    # Swap two small, word characters in a string
     def char_swap(self):
+        """
+        Swaps two ramdom consecutive word characters (regex \\w) in the string. The replacing character retains the case
+        of replaced character. For example, after character swap, 'Happy' may become 'Ahppy'. Here, H and a are
+        swapped, and those also retain each other's case. :return: An instance of the StrErrer class.
+        """
         strval = self.result
         # all the locations where there are two consecutive alpanumeric characters.
         locations = [m.start() for m in re.finditer(r'(?=[\w]{2})', strval)]
@@ -25,8 +42,11 @@ class StrErrer:
             self.result = strval[:location] + secondchar + firstchar + strval[location + 2:]
         return self
 
-    # Randomly skip a small, word character in a string.
     def missing_char(self):
+        """
+        Skips a random word character (regex \\w) in the string.
+        :return: An instance of the StrErrer class.
+        """
         strval = self.result
         # all the locations where there are word characters.
         locations = [m.start() for m in re.finditer(r'[\w]', strval)]
@@ -35,8 +55,11 @@ class StrErrer:
             self.result = strval[:location] + strval[location + 1:]
         return self
 
-    # Add an extra, nearby letter next to a word character
     def extra_char(self):
+        """
+        Adds an extra, keyboard-neighbor, letter next to a random word character (regex \\w).
+        :return: An instance of the StrErrer class.
+        """
         strval = self.result
         # all the locations where there are word characters.
         locations = [m.start() for m in re.finditer(r'[\w]', strval)]
@@ -47,8 +70,11 @@ class StrErrer:
             self.result = strval[:location] + char_to_add + strval[location:]
         return self
 
-    # Replace a character with nearby letter on keyboard
     def nearby_char(self):
+        """
+        Replaces a random word character (regex \\w) with keyboard-neighbor letter. The replacing character retains
+        the case of the replaced character. :return: An instance of the StrErrer class.
+        """
         strval = self.result
         # all the locations where there are word characters.
         locations = [m.start() for m in re.finditer(r'[\w]', strval)]
@@ -61,8 +87,11 @@ class StrErrer:
             self.result = strval[:location] + replace_with + strval[location + 1:]
         return self
 
-    # Replace a character with visually similar character
     def similar_char(self):
+        """
+        Replaces a random word character (regex \\w) with another visually similar character. The replacing character
+        does not retain the case of the replaced character. :return: An instance of the StrErrer class.
+        """
         strval = self.result
         # all the locations where there are word characters.
         locations = [m.start() for m in re.finditer(r'\w', strval)]
@@ -73,8 +102,11 @@ class StrErrer:
             self.result = strval[:location] + replace_with + strval[location + 1:]
         return self
 
-    # Skip space from a sentence
     def skipped_space(self):
+        """
+        Skips a random space from the string.
+        :return: An instance of the StrErrer class.
+        """
         strval = self.result
         spaces = [m.start() for m in re.finditer(' ', strval)]
         if len(spaces) > 0:
@@ -82,8 +114,11 @@ class StrErrer:
             self.result = strval[:to_skip] + strval[to_skip + 1:]
         return self
 
-    # Adds random space in a sentence
     def random_space(self):
+        """
+        Adds a random space in the string.
+        :return: An instance of the StrErrer class.
+        """
         strval = self.result
         # all the locations where there are non-space characters.
         locations = [m.start() for m in re.finditer(r'[^\s]', strval)]
@@ -92,8 +127,11 @@ class StrErrer:
             self.result = strval[:location] + ' ' + strval[location:]
         return self
 
-    # Randomly repeat a word character
     def repeated_char(self):
+        """
+        Repeats a random word character (regex \\w).
+        :return: An instance of the StrErrer class.
+        """
         strval = self.result
         # all the locations where there are word characters.
         locations = [m.start() for m in re.finditer(r'[\w]', strval)]
@@ -103,8 +141,11 @@ class StrErrer:
             self.result = strval[:location] + char_to_repeat + strval[location:]
         return self
 
-    # Randomly replace a repeated letter with a single letter
     def unichar(self):
+        """
+        Replaces a random consecutive repeated letter with a single letter.
+        :return: An instance of the StrErrer class.
+        """
         strval = self.result
         repeats = [m.start() for m in re.finditer(r'(.)\1', strval)]
         if len(repeats) > 0:
@@ -114,7 +155,20 @@ class StrErrer:
 
 
 class IntErrer:
+    """
+    This class simulates typographical errors on Integer data types. Multiple error methods can be chained after
+    initializing the class.
+
+    Attributes:
+        result (int): Output of the the typographical error.
+    """
+
     def __init__(self, value, seed=None):
+        """
+        The constructor for the IntErrer class.
+        :param value: The integer to alter with error.
+        :param seed: Seed for random value generation.
+        """
         self.originalseed = seed
         random.seed(seed)
         # parse the integer
@@ -133,30 +187,50 @@ class IntErrer:
 
     # Swaps random two digits, and returns a valid integer
     def digit_swap(self):
+        """
+        Swaps two random consecutive digits in the integer.
+        :return: An instance of the IntErrer class.
+        """
         strval = str(self.magnitude)
         self.magnitude = int(StrErrer(strval, seed=self.originalseed).char_swap().result)
         return self
 
     # Randomly skip a digit.
     def missing_digit(self):
+        """
+        Skips a random digit in the integer.
+        :return: An instance of the IntErrer class.
+        """
         strval = str(self.magnitude)
         self.magnitude = int(StrErrer(strval, seed=self.originalseed).missing_char().result)
         return self
 
     # Add an extra, nearby digit
     def extra_digit(self):
+        """
+        Adds an extra, keyboard-neighbor, digit next to a random digit in the integer.
+        :return: An instance of the IntErrer class.
+        """
         strval = str(self.magnitude)
         self.magnitude = int(StrErrer(strval, seed=self.originalseed).extra_char().result)
         return self
 
     # Replaces a digit with a nearby digit on keyboard.
     def nearby_digit(self):
+        """
+        Replaces a random digit in the integer with a keyboard-neighbor digit.
+        :return: An instance of the IntErrer class.
+        """
         strval = str(self.magnitude)
         self.magnitude = int(StrErrer(strval, seed=self.originalseed).nearby_char().result)
         return self
 
     # replaces with another visually similar digit
     def similar_digit(self):
+        """
+        Replaces a random digit with another visually similar digit.
+        :return: An instance of the IntErrer class.
+        """
         strval = str(self.magnitude)
         location = random.randint(0, len(strval) - 1)
         digit_to_replace = strval[location]
@@ -166,19 +240,39 @@ class IntErrer:
 
     # Randomly repeats a digit.
     def repeated_digit(self):
+        """
+        Repeats a random digit in the integer.
+        :return: An instance of the IntErrer class.
+        """
         strval = str(self.magnitude)
         self.magnitude = int(StrErrer(strval, seed=self.originalseed).repeated_char().result)
         return self
 
     # Randomly replace a repeated digit with a single one
     def unidigit(self):
+        """
+        Replaces a random consecutive repeated digit with a single digit.
+        :return: An instance of the IntErrer class.
+        """
         strval = str(self.magnitude)
         self.magnitude = int(StrErrer(strval, seed=self.originalseed).unichar().result)
         return self
 
 
 class DateErrer:
+    """
+    This class simulates typographical errors on Date data types. Multiple error methods can be chained after
+    initializing the class.
+
+    Attributes:
+        result (datetime.datetime): Output of the the typographical error.
+    """
     def __init__(self, value, seed=None):
+        """
+        The constructor for the DateErrer class.
+        :param value: The date time value to alter with error.
+        :param seed: Seed for random value generation.
+        """
         random.seed(seed)
         # parse the DateTime
         if not isinstance(value, datetime.datetime):
@@ -190,6 +284,10 @@ class DateErrer:
 
     # swaps month and date, and returns a valid date
     def date_month_swap(self):
-        if self.result.month < 13:
+        """
+        Swaps the day and month of the date if the value so of the day is less than or equal to 12.
+        :return: An instance of the DateErrer class.
+        """
+        if self.result.day < 13:
             self.result = self.result.replace(month=self.result.day, day=self.result.month)
         return self

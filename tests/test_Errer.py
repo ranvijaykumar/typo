@@ -165,3 +165,5 @@ class TestDateErrer(TestCase):
     def test_date_month_swap(self):
         self.assertEqual(typo.DateErrer(datetime.datetime.strptime("8 Mar 95", "%d %b %y"),
                                         seed=1).date_month_swap().result, datetime.datetime(1995, 8, 3, 0, 0))
+        self.assertEqual(typo.DateErrer(datetime.datetime.strptime("18 Mar 95", "%d %b %y"),
+                                        seed=1).date_month_swap().result, datetime.datetime(1995, 3, 18, 0, 0))
