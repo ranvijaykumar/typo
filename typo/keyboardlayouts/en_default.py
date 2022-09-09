@@ -112,7 +112,7 @@ def get_random_neighbor(char, seed=None):
     if len(char) != 1:
         raise Exception("Need exactly one character to find a neighbor")
 
-    if char.isdigit():
+    if char.isdecimal():
         numpad = random.choice([True, False])
         if numpad:
             return random.choice(NEIGHBORINGNUMPADDIGITS[char])
