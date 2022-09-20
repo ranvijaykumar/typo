@@ -10,7 +10,7 @@ class StrErrer:
     initializing the class.
 
     Attributes:
-        result (str): Output of the the typographical error.
+        result (str): Output of the typographical error.
     """
 
     def __init__(self, value, seed=None):
@@ -32,8 +32,8 @@ class StrErrer:
         swapped, and those also retain each other's case. :return: An instance of the StrErrer class.
         """
         strval = self.result
-        # all the locations where there are two consecutive alpanumeric characters.
-        locations = [m.start() for m in re.finditer(r'(?=[\w]{2})', strval)]
+        # all the locations where there are two consecutive alphanumeric characters.
+        locations = [m.start() for m in re.finditer(r'(?=\w{2})', strval)]
         if len(locations) > 0:
             location = locations[random.randint(0, len(locations) - 1)]
             # Preserving the cases.
@@ -49,7 +49,7 @@ class StrErrer:
         """
         strval = self.result
         # all the locations where there are word characters.
-        locations = [m.start() for m in re.finditer(r'[\w]', strval)]
+        locations = [m.start() for m in re.finditer(r'\w', strval)]
         if len(locations) > 1:
             location = locations[random.randint(0, len(locations) - 1)]
             self.result = strval[:location] + strval[location + 1:]
@@ -62,7 +62,7 @@ class StrErrer:
         """
         strval = self.result
         # all the locations where there are word characters.
-        locations = [m.start() for m in re.finditer(r'[\w]', strval)]
+        locations = [m.start() for m in re.finditer(r'\w', strval)]
         if len(locations) > 0:
             location = locations[random.randint(0, len(locations) - 1)]
             trigger_char = strval[location]
@@ -77,7 +77,7 @@ class StrErrer:
         """
         strval = self.result
         # all the locations where there are word characters.
-        locations = [m.start() for m in re.finditer(r'[\w]', strval)]
+        locations = [m.start() for m in re.finditer(r'\w', strval)]
         if len(locations) > 0:
             location = locations[random.randint(0, len(locations) - 1)]
             char_to_replace = strval[location]
@@ -121,7 +121,7 @@ class StrErrer:
         """
         strval = self.result
         # all the locations where there are non-space characters.
-        locations = [m.start() for m in re.finditer(r'[^\s]', strval)]
+        locations = [m.start() for m in re.finditer(r'\S', strval)]
         if len(locations) > 0:
             location = locations[random.randint(0, len(locations) - 1)]
             self.result = strval[:location] + ' ' + strval[location:]
@@ -134,7 +134,7 @@ class StrErrer:
         """
         strval = self.result
         # all the locations where there are word characters.
-        locations = [m.start() for m in re.finditer(r'[\w]', strval)]
+        locations = [m.start() for m in re.finditer(r'\w', strval)]
         if len(locations) > 0:
             location = locations[random.randint(0, len(locations) - 1)]
             char_to_repeat = strval[location]
@@ -160,7 +160,7 @@ class IntErrer:
     initializing the class.
 
     Attributes:
-        result (int): Output of the the typographical error.
+        result (int): Output of the typographical error.
     """
 
     def __init__(self, value, seed=None):
@@ -265,7 +265,7 @@ class DateErrer:
     initializing the class.
 
     Attributes:
-        result (datetime.datetime): Output of the the typographical error.
+        result (datetime.datetime): Output of the typographical error.
     """
     def __init__(self, value, seed=None):
         """
