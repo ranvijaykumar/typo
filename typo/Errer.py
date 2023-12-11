@@ -25,13 +25,25 @@ class StrErrer:
     def __repr__(self):
         return self.result
 
-    def char_swap(self):
+    def char_swap(self, preservefirst=False, preservelast=False):
         """
         Swaps two random consecutive word characters (regex \\w) in the string. The replacing character retains the case
         of replaced character. For example, after character swap, 'Happy' may become 'Ahppy'. Here, H and a are
         swapped, and those also retain each other's case. :return: An instance of the StrErrer class.
         """
         strval = self.result
+        firstpres = lastpres = ''
+
+        # remove and preserve the first character if asked
+        if preservefirst and strval:
+            firstpres = strval[0]
+            strval = strval[1:]
+
+        # remove and preserve the last character if asked
+        if preservelast and strval:
+            lastpres = strval[-1]
+            strval = strval[:-1]
+
         # all the locations where there are two consecutive alphanumeric characters.
         locations = [m.start() for m in re.finditer(r'(?=\w{2})', strval)]
         if len(locations) > 0:
@@ -39,43 +51,79 @@ class StrErrer:
             # Preserving the cases.
             firstchar = strval[location].upper() if strval[location + 1].isupper() else strval[location].lower()
             secondchar = strval[location + 1].upper() if strval[location].isupper() else strval[location + 1].lower()
-            self.result = strval[:location] + secondchar + firstchar + strval[location + 2:]
+            self.result = firstpres + strval[:location] + secondchar + firstchar + strval[location + 2:] + lastpres
         return self
 
-    def missing_char(self):
+    def missing_char(self, preservefirst=False, preservelast=False):
         """
         Skips a random word character (regex \\w) in the string.
         :return: An instance of the StrErrer class.
         """
         strval = self.result
+        firstpres = lastpres = ''
+
+        # remove and preserve the first character if asked
+        if preservefirst and strval:
+            firstpres = strval[0]
+            strval = strval[1:]
+
+        # remove and preserve the last character if asked
+        if preservelast and strval:
+            lastpres = strval[-1]
+            strval = strval[:-1]
+
         # all the locations where there are word characters.
         locations = [m.start() for m in re.finditer(r'\w', strval)]
         if len(locations) > 1:
             location = locations[random.randint(0, len(locations) - 1)]
-            self.result = strval[:location] + strval[location + 1:]
+            self.result = firstpres + strval[:location] + strval[location + 1:] + lastpres
         return self
 
-    def extra_char(self):
+    def extra_char(self, preservefirst=False, preservelast=False):
         """
         Adds an extra, keyboard-neighbor, letter next to a random word character (regex \\w).
         :return: An instance of the StrErrer class.
         """
         strval = self.result
+        firstpres = lastpres = ''
+
+        # remove and preserve the first character if asked
+        if preservefirst and strval:
+            firstpres = strval[0]
+            strval = strval[1:]
+
+        # remove and preserve the last character if asked
+        if preservelast and strval:
+            lastpres = strval[-1]
+            strval = strval[:-1]
+
         # all the locations where there are word characters.
         locations = [m.start() for m in re.finditer(r'\w', strval)]
         if len(locations) > 0:
             location = locations[random.randint(0, len(locations) - 1)]
             trigger_char = strval[location]
             char_to_add = en_default.get_random_neighbor(trigger_char)
-            self.result = strval[:location] + char_to_add + strval[location:]
+            self.result = firstpres + strval[:location] + char_to_add + strval[location:] + lastpres
         return self
 
-    def nearby_char(self):
+    def nearby_char(self, preservefirst=False, preservelast=False):
         """
         Replaces a random word character (regex \\w) with keyboard-neighbor letter. The replacing character retains
         the case of the replaced character. :return: An instance of the StrErrer class.
         """
         strval = self.result
+        firstpres = lastpres = ''
+
+        # remove and preserve the first character if asked
+        if preservefirst and strval:
+            firstpres = strval[0]
+            strval = strval[1:]
+
+        # remove and preserve the last character if asked
+        if preservelast and strval:
+            lastpres = strval[-1]
+            strval = strval[:-1]
+
         # all the locations where there are word characters.
         locations = [m.start() for m in re.finditer(r'\w', strval)]
         if len(locations) > 0:
@@ -84,22 +132,34 @@ class StrErrer:
             replace_with = en_default.get_random_neighbor(char_to_replace)
             # preserve case of the replaced character
             replace_with = replace_with.upper() if char_to_replace.isupper() else replace_with.lower()
-            self.result = strval[:location] + replace_with + strval[location + 1:]
+            self.result = firstpres + strval[:location] + replace_with + strval[location + 1:] + lastpres
         return self
 
-    def similar_char(self):
+    def similar_char(self, preservefirst=False, preservelast=False):
         """
         Replaces a random word character (regex \\w) with another visually similar character. The replacing character
         does not retain the case of the replaced character. :return: An instance of the StrErrer class.
         """
         strval = self.result
+        firstpres = lastpres = ''
+
+        # remove and preserve the first character if asked
+        if preservefirst and strval:
+            firstpres = strval[0]
+            strval = strval[1:]
+
+        # remove and preserve the last character if asked
+        if preservelast and strval:
+            lastpres = strval[-1]
+            strval = strval[:-1]
+
         # all the locations where there are word characters.
         locations = [m.start() for m in re.finditer(r'\w', strval)]
         if len(locations) > 0:
             location = locations[random.randint(0, len(locations) - 1)]
             char_to_replace = strval[location]
             replace_with = en_default.get_random_visually_similar_char(char_to_replace)
-            self.result = strval[:location] + replace_with + strval[location + 1:]
+            self.result = firstpres + strval[:location] + replace_with + strval[location + 1:] + lastpres
         return self
 
     def skipped_space(self):
@@ -175,7 +235,7 @@ class IntErrer:
         if not isinstance(value, int):
             raise Exception("value: '" + value + "' is not an integer")
         # set sign and absolute value
-        self.sign = pow(-1, int(value < 0))
+        self.sign = -1 if value < 0 else 1
         self.magnitude = abs(value)
 
     def __repr__(self):
@@ -186,43 +246,43 @@ class IntErrer:
         return self.sign * self.magnitude
 
     # Swaps random two digits, and returns a valid integer
-    def digit_swap(self):
+    def digit_swap(self, preservefirst=False, preservelast=False):
         """
         Swaps two random consecutive digits in the integer.
         :return: An instance of the IntErrer class.
         """
         strval = str(self.magnitude)
-        self.magnitude = int(StrErrer(strval, seed=self.originalseed).char_swap().result)
+        self.magnitude = int(StrErrer(strval, seed=self.originalseed).char_swap(preservefirst, preservelast).result)
         return self
 
     # Randomly skip a digit.
-    def missing_digit(self):
+    def missing_digit(self, preservefirst=False, preservelast=False):
         """
         Skips a random digit in the integer.
         :return: An instance of the IntErrer class.
         """
         strval = str(self.magnitude)
-        self.magnitude = int(StrErrer(strval, seed=self.originalseed).missing_char().result)
+        self.magnitude = int(StrErrer(strval, seed=self.originalseed).missing_char(preservefirst, preservelast).result)
         return self
 
     # Add an extra, nearby digit
-    def extra_digit(self):
+    def extra_digit(self, preservefirst=False, preservelast=False):
         """
         Adds an extra, keyboard-neighbor, digit next to a random digit in the integer.
         :return: An instance of the IntErrer class.
         """
         strval = str(self.magnitude)
-        self.magnitude = int(StrErrer(strval, seed=self.originalseed).extra_char().result)
+        self.magnitude = int(StrErrer(strval, seed=self.originalseed).extra_char(preservefirst, preservelast).result)
         return self
 
     # Replaces a digit with a nearby digit on keyboard.
-    def nearby_digit(self):
+    def nearby_digit(self, preservefirst=False, preservelast=False):
         """
         Replaces a random digit in the integer with a keyboard-neighbor digit.
         :return: An instance of the IntErrer class.
         """
         strval = str(self.magnitude)
-        self.magnitude = int(StrErrer(strval, seed=self.originalseed).nearby_char().result)
+        self.magnitude = int(StrErrer(strval, seed=self.originalseed).nearby_char(preservefirst, preservelast).result)
         return self
 
     # replaces with another visually similar digit
@@ -267,6 +327,7 @@ class DateErrer:
     Attributes:
         result (datetime.datetime): Output of the typographical error.
     """
+
     def __init__(self, value, seed=None):
         """
         The constructor for the DateErrer class.

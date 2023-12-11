@@ -11,20 +11,51 @@ class TestStrErrer(TestCase):
         self.assertEqual(typo.StrErrer('ab', seed=1).char_swap().result, 'ba')
         self.assertEqual(typo.StrErrer('abc', seed=1).char_swap().result, 'bac')
         self.assertEqual(typo.StrErrer('2021', seed=1).char_swap().result, '0221')
-        self.assertEqual(typo.StrErrer('Hello World! Happy new year 2021.', seed=13).char_swap().result,
-                         'Hello World! Ahppy new year 2021.')
+        self.assertEqual(typo.StrErrer('Hello World! Happy new year 2021.', seed=13).char_swap()
+                         .result, 'Hello World! Ahppy new year 2021.')
+
+        # Testing character preservation
+        self.assertEqual(typo.StrErrer('', seed=1).char_swap(preservefirst=True, preservelast=True).result, '')
+        test_strings = [' ', 'a', 'ab', 'abc', '1234', 'Hello World! Happy new year 2021.', '\r', '\r\n']
+        for test_string in test_strings:
+            seed_range = range(1, (len(test_string) + 1) * 10)
+            for s in seed_range:
+                self.assertEqual(typo.StrErrer(test_string, s).char_swap(preservefirst=True).result[0], test_string[0])
+                self.assertEqual(typo.StrErrer(test_string, s).char_swap(preservelast=True).result[-1], test_string[-1])
+                self.assertEqual(typo.StrErrer(test_string, s).char_swap(preservefirst=True, preservelast=True)
+                                 .result[0], test_string[0])
+                self.assertEqual(typo.StrErrer(test_string, s).char_swap(preservefirst=True, preservelast=True)
+                                 .result[-1], test_string[-1])
 
     def test_missing_char(self):
         self.assertEqual(typo.StrErrer('', seed=1).missing_char().result, '')
+        self.assertEqual(typo.StrErrer('', seed=1).missing_char(preservefirst=True, preservelast=True).result, '')
         self.assertEqual(typo.StrErrer('  ', seed=1).missing_char().result, '  ')
         self.assertEqual(typo.StrErrer('a', seed=1).missing_char().result, 'a')
         self.assertEqual(typo.StrErrer('ab', seed=1).missing_char().result, 'b')
         self.assertEqual(typo.StrErrer('abcdefgh', seed=1).missing_char().result, 'abdefgh')
+        self.assertEqual(typo.StrErrer('abcdefgh', seed=2).missing_char().result, 'bcdefgh')
+        self.assertEqual(typo.StrErrer('abcdefgh', seed=9).missing_char().result, 'abcdefg')
         self.assertEqual(typo.StrErrer('2021', seed=1).missing_char().result, '221')
         self.assertEqual(typo.StrErrer('Hello World! Happy new year 2021.', seed=2).missing_char().result,
                          'Hllo World! Happy new year 2021.')
         self.assertEqual(typo.StrErrer('Hello World! Happy new year 2021.', seed=7).missing_char().result,
                          'Hello World! appy new year 2021.')
+
+        # Testing character preservation
+        self.assertEqual(typo.StrErrer('', seed=1).missing_char(preservefirst=True, preservelast=True).result, '')
+        test_strings = [' ', 'a', 'ab', 'abcdefgh', '2021', 'Hello World! Happy new year 2021.', '\r', '\r\n']
+        for test_string in test_strings:
+            seed_range = range(1, (len(test_string) + 1) * 10)
+            for s in seed_range:
+                self.assertEqual(typo.StrErrer(test_string, s).missing_char(preservefirst=True).result[0],
+                                 test_string[0])
+                self.assertEqual(typo.StrErrer(test_string, s).missing_char(preservelast=True).result[-1],
+                                 test_string[-1])
+                self.assertEqual(typo.StrErrer(test_string, s).missing_char(preservefirst=True, preservelast=True)
+                                 .result[0], test_string[0])
+                self.assertEqual(typo.StrErrer(test_string, s).missing_char(preservefirst=True, preservelast=True)
+                                 .result[-1], test_string[-1])
 
     def test_extra_char(self):
         self.assertEqual(typo.StrErrer('', seed=1).extra_char().result, '')
@@ -37,6 +68,18 @@ class TestStrErrer(TestCase):
         self.assertEqual(typo.StrErrer('Hello World! Happy new year 2021.', seed=7).extra_char().result,
                          'Hello World! BHappy new year 2021.')
 
+        # Testing character preservation
+        self.assertEqual(typo.StrErrer('', seed=1).extra_char(preservefirst=True, preservelast=True).result, '')
+        test_strings = [' ', 'a', 'ab', 'abc', '1234', 'Hello World! Happy new year 2021.', '\r', '\r\n']
+        for test_string in test_strings:
+            seed_range = range(1, (len(test_string) + 1) * 10)
+            for s in seed_range:
+                self.assertEqual(typo.StrErrer(test_string, s).extra_char(preservefirst=True).result[0], test_string[0])
+                self.assertEqual(typo.StrErrer(test_string, s).extra_char(preservelast=True).result[-1], test_string[-1])
+                self.assertEqual(typo.StrErrer(test_string, s).extra_char(preservefirst=True, preservelast=True)
+                                 .result[0], test_string[0])
+                self.assertEqual(typo.StrErrer(test_string, s).extra_char(preservefirst=True, preservelast=True)
+                                 .result[-1], test_string[-1])
     def test_nearby_char(self):
         self.assertEqual(typo.StrErrer('', seed=1).nearby_char().result, '')
         self.assertEqual(typo.StrErrer(' ', seed=1).nearby_char().result, ' ')
@@ -46,6 +89,21 @@ class TestStrErrer(TestCase):
         self.assertEqual(typo.StrErrer('Hello World! Happy new year 2021.', seed=5).nearby_char().result,
                          'Hello World! Happy new ysar 2021.')
 
+        # Testing character preservation
+        self.assertEqual(typo.StrErrer('', seed=1).nearby_char(preservefirst=True, preservelast=True).result, '')
+        test_strings = [' ', 'w', '$fghh', 'happy', 'Hello World! Happy new year 2021.', '\r', '\r\n']
+        for test_string in test_strings:
+            seed_range = range(1, (len(test_string) + 1) * 10)
+            for s in seed_range:
+                self.assertEqual(typo.StrErrer(test_string, s).nearby_char(preservefirst=True).result[0],
+                                 test_string[0])
+                self.assertEqual(typo.StrErrer(test_string, s).nearby_char(preservelast=True).result[-1],
+                                 test_string[-1])
+                self.assertEqual(typo.StrErrer(test_string, s).nearby_char(preservefirst=True, preservelast=True)
+                                 .result[0], test_string[0])
+                self.assertEqual(typo.StrErrer(test_string, s).nearby_char(preservefirst=True, preservelast=True)
+                                 .result[-1], test_string[-1])
+
     def test_similar_char(self):
         self.assertEqual(typo.StrErrer('', seed=1).similar_char().result, '')
         self.assertEqual(typo.StrErrer('Z', seed=1).similar_char().result, '2')
@@ -54,6 +112,21 @@ class TestStrErrer(TestCase):
                          'Hell0 world! Happy new year 2021.')
         self.assertEqual(typo.StrErrer('To be or not to be that is the question.', seed=2).similar_char().result,
                          'To be or not to be that is the questIon.')
+
+        # Testing character preservation
+        self.assertEqual(typo.StrErrer('', seed=1).similar_char(preservefirst=True, preservelast=True).result, '')
+        test_strings = [' ', 'w', '$fghh', 'happy', 'Hello World! Happy new year 2021.', '\r', '\r\n']
+        for test_string in test_strings:
+            seed_range = range(1, (len(test_string) + 1) * 10)
+            for s in seed_range:
+                self.assertEqual(typo.StrErrer(test_string, s).similar_char(preservefirst=True).result[0],
+                                 test_string[0])
+                self.assertEqual(typo.StrErrer(test_string, s).similar_char(preservelast=True).result[-1],
+                                 test_string[-1])
+                self.assertEqual(typo.StrErrer(test_string, s).similar_char(preservefirst=True, preservelast=True)
+                                 .result[0], test_string[0])
+                self.assertEqual(typo.StrErrer(test_string, s).similar_char(preservefirst=True, preservelast=True)
+                                 .result[-1], test_string[-1])
 
     def test_skipped_space(self):
         self.assertEqual(typo.StrErrer('', seed=1).skipped_space().result, '')
@@ -105,6 +178,22 @@ class TestIntErrer(TestCase):
         self.assertEqual(typo.IntErrer(1234567890, seed=6).digit_swap().result, 1324567890)
         self.assertEqual(typo.IntErrer(-1234567890, seed=7).digit_swap().result, -1234576890)
 
+        # Testing digit preservation
+        test_ints = [0, 1, -1, 12, -12, 1234567890, -1234567890]
+        for test_int in test_ints:
+            testsign = 1 if test_int >= 0 else -1
+            absval_string = str(abs(test_int))
+            seed_range = range(1, (len(absval_string) + 1) * 10)
+            for s in seed_range:
+                self.assertEqual(str(testsign * typo.IntErrer(test_int, s)
+                                     .digit_swap(preservefirst=True).result)[0], absval_string[0])
+                self.assertEqual(str(testsign * typo.IntErrer(test_int, s)
+                                     .digit_swap(preservelast=True).result)[-1], absval_string[-1])
+                self.assertEqual(str(testsign * typo.IntErrer(test_int, s)
+                                     .digit_swap(preservefirst=True, preservelast=True).result)[0], absval_string[0])
+                self.assertEqual(str(testsign * typo.IntErrer(test_int, s)
+                                     .digit_swap(preservefirst=True, preservelast=True).result)[-1], absval_string[-1])
+
     def test_missing_digit(self):
         self.assertEqual(typo.IntErrer(0, seed=1).missing_digit().result, 0)
         self.assertEqual(typo.IntErrer(1, seed=2).missing_digit().result, 1)
@@ -113,6 +202,23 @@ class TestIntErrer(TestCase):
         self.assertEqual(typo.IntErrer(-12, seed=5).missing_digit().result, -1)
         self.assertEqual(typo.IntErrer(1234567890, seed=6).missing_digit().result, 123456789)
         self.assertEqual(typo.IntErrer(-1234567890, seed=7).missing_digit().result, -123457890)
+
+        # Testing digit preservation
+        test_ints = [0, 1, -1, 12, -12, 1234567890, -1234567890]
+        for test_int in test_ints:
+            testsign = 1 if test_int >= 0 else -1
+            absval_string = str(abs(test_int))
+            seed_range = range(1, (len(absval_string) + 1) * 10)
+            for s in seed_range:
+                self.assertEqual(str(testsign * typo.IntErrer(test_int, s)
+                                     .missing_digit(preservefirst=True).result)[0], absval_string[0])
+                self.assertEqual(str(testsign * typo.IntErrer(test_int, s)
+                                     .missing_digit(preservelast=True).result)[-1], absval_string[-1])
+                self.assertEqual(str(testsign * typo.IntErrer(test_int, s)
+                                     .missing_digit(preservefirst=True, preservelast=True).result)[0], absval_string[0])
+                self.assertEqual(str(testsign * typo.IntErrer(test_int, s)
+                                     .missing_digit(preservefirst=True, preservelast=True).result)[-1],
+                                 absval_string[-1])
 
     def test_extra_digit(self):
         self.assertEqual(typo.IntErrer(0, seed=1).extra_digit().result, 20)
@@ -123,6 +229,22 @@ class TestIntErrer(TestCase):
         self.assertEqual(typo.IntErrer(1234567890, seed=6).extra_digit().result, 12345678920)
         self.assertEqual(typo.IntErrer(-1234567890, seed=7).extra_digit().result, -12345267890)
 
+        # Testing digit preservation
+        test_ints = [0, 1, -1, 12, -12, 1234567890, -1234567890]
+        for test_int in test_ints:
+            testsign = 1 if test_int >= 0 else -1
+            absval_string = str(abs(test_int))
+            seed_range = range(1, (len(absval_string) + 1) * 10)
+            for s in seed_range:
+                self.assertEqual(str(testsign * typo.IntErrer(test_int, s)
+                                     .extra_digit(preservefirst=True).result)[0], absval_string[0])
+                self.assertEqual(str(testsign * typo.IntErrer(test_int, s)
+                                     .extra_digit(preservelast=True).result)[-1], absval_string[-1])
+                self.assertEqual(str(testsign * typo.IntErrer(test_int, s)
+                                     .extra_digit(preservefirst=True, preservelast=True).result)[0], absval_string[0])
+                self.assertEqual(str(testsign * typo.IntErrer(test_int, s)
+                                     .extra_digit(preservefirst=True, preservelast=True).result)[-1], absval_string[-1])
+
     def test_nearby_digit(self):
         self.assertEqual(typo.IntErrer(0, seed=1).nearby_digit().result, 2)
         self.assertEqual(typo.IntErrer(1, seed=2).nearby_digit().result, 4)
@@ -131,6 +253,23 @@ class TestIntErrer(TestCase):
         self.assertEqual(typo.IntErrer(-12, seed=5).nearby_digit().result, -13)
         self.assertEqual(typo.IntErrer(1234567890, seed=6).nearby_digit().result, 1234567892)
         self.assertEqual(typo.IntErrer(-1234567890, seed=7).nearby_digit().result, -1234527890)
+
+        # Testing digit preservation
+        test_ints = [0, 1, -1, 12, -12, 1234567890, -1234567890]
+        for test_int in test_ints:
+            testsign = 1 if test_int >= 0 else -1
+            absval_string = str(abs(test_int))
+            seed_range = range(1, (len(absval_string) + 1) * 10)
+            for s in seed_range:
+                self.assertEqual(str(testsign * typo.IntErrer(test_int, s)
+                                     .nearby_digit(preservefirst=True).result)[0], absval_string[0])
+                self.assertEqual(str(testsign * typo.IntErrer(test_int, s)
+                                     .nearby_digit(preservelast=True).result)[-1], absval_string[-1])
+                self.assertEqual(str(testsign * typo.IntErrer(test_int, s)
+                                     .nearby_digit(preservefirst=True, preservelast=True).result)[0], absval_string[0])
+                self.assertEqual(str(testsign * typo.IntErrer(test_int, s)
+                                     .nearby_digit(preservefirst=True, preservelast=True).result)[-1],
+                                 absval_string[-1])
 
     def test_similar_digit(self):
         self.assertEqual(typo.IntErrer(0, seed=1).similar_digit().result, 9)
