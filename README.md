@@ -1,6 +1,9 @@
 # typo
 typo is a python package to simulate typographical errors in English language. 
 
+### Release 0.1.7
+* Ability to preserve first and/or last characters in error methods.
+
 ### Usage
 
 ```python
