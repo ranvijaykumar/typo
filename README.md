@@ -39,7 +39,7 @@ Given the input _Hello World! Happy new year 2021._, different error types produ
 | missing_char(preservefirst=False, preservelast=False) | Skips a random word character in the string.                              | Hllo World! Happy new year 2021.   |
 | extra_char(preservefirst=False, preservelast=False)   | Adds an extra, keyboard-neighbor, letter next to a random word character. | Hrello World! Happy new year 2021. |
 | nearby_char(preservefirst=False, preservelast=False)  | Replaces a random word character with keyboard-neighbor letter.           | Hello World! Happy new ysar 2021.  |
-| similar_char(preservefirst=False, preservelast=False) | Replaces a random word character with another visually similar character. | Hell0 world! Happy new year 2021.  |
+| similar_char()                                        | Replaces a random word character with another visually similar character. | Hell0 world! Happy new year 2021.  |
 | skipped_space()                                       | Skips a random space from the string.                                     | Hello world! Happy new year2021.   |
 | random_space()                                        | Adds a random space in the string.                                        | Hell o world! Happy new year 2021. |
 | repeated_char()                                       | Repeats a random word character.                                          | Hello worrld! Happy new year 2021. |
@@ -47,7 +47,7 @@ Given the input _Hello World! Happy new year 2021._, different error types produ
 
 **Integer typos:** 
 
-| Method                                                 | Description                                                                    | Input         | Sample output |
+| Error method                                           | Description                                                                    | Input         | Sample output |
 |--------------------------------------------------------|--------------------------------------------------------------------------------|---------------|---------------|
 | digit_swap(preservefirst=False, preservelast=False)    | Swaps two random consecutive digits in the integer.                            | 1234567890    | 1324567890    |
 | missing_digit(preservefirst=False, preservelast=False) | Skips a random digit in the integer.                                           | -1234567890   | -123457890    |
@@ -59,6 +59,6 @@ Given the input _Hello World! Happy new year 2021._, different error types produ
 
 **Datetime typos:** 
 
-| Method            | Description                                                                              | Input    | Sample output |
+| Error method      | Description                                                                              | Input    | Sample output |
 |-------------------|------------------------------------------------------------------------------------------|----------|---------------|
 | date_month_swap() | Swaps the day and month of the date if the value of the day is less than or equal to 12. | 8 Mar 95 | 3 Aug 95      |

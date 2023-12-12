@@ -113,21 +113,6 @@ class TestStrErrer(TestCase):
         self.assertEqual(typo.StrErrer('To be or not to be that is the question.', seed=2).similar_char().result,
                          'To be or not to be that is the questIon.')
 
-        # Testing character preservation
-        self.assertEqual(typo.StrErrer('', seed=1).similar_char(preservefirst=True, preservelast=True).result, '')
-        test_strings = [' ', 'w', '$fghh', 'happy', 'Hello World! Happy new year 2021.', '\r', '\r\n']
-        for test_string in test_strings:
-            seed_range = range(1, (len(test_string) + 1) * 10)
-            for s in seed_range:
-                self.assertEqual(typo.StrErrer(test_string, s).similar_char(preservefirst=True).result[0],
-                                 test_string[0])
-                self.assertEqual(typo.StrErrer(test_string, s).similar_char(preservelast=True).result[-1],
-                                 test_string[-1])
-                self.assertEqual(typo.StrErrer(test_string, s).similar_char(preservefirst=True, preservelast=True)
-                                 .result[0], test_string[0])
-                self.assertEqual(typo.StrErrer(test_string, s).similar_char(preservefirst=True, preservelast=True)
-                                 .result[-1], test_string[-1])
-
     def test_skipped_space(self):
         self.assertEqual(typo.StrErrer('', seed=1).skipped_space().result, '')
         self.assertEqual(typo.StrErrer(' ', seed=1).skipped_space().result, '')

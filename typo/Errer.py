@@ -135,31 +135,19 @@ class StrErrer:
             self.result = firstpres + strval[:location] + replace_with + strval[location + 1:] + lastpres
         return self
 
-    def similar_char(self, preservefirst=False, preservelast=False):
+    def similar_char(self):
         """
         Replaces a random word character (regex \\w) with another visually similar character. The replacing character
         does not retain the case of the replaced character. :return: An instance of the StrErrer class.
         """
         strval = self.result
-        firstpres = lastpres = ''
-
-        # remove and preserve the first character if asked
-        if preservefirst and strval:
-            firstpres = strval[0]
-            strval = strval[1:]
-
-        # remove and preserve the last character if asked
-        if preservelast and strval:
-            lastpres = strval[-1]
-            strval = strval[:-1]
-
         # all the locations where there are word characters.
         locations = [m.start() for m in re.finditer(r'\w', strval)]
         if len(locations) > 0:
             location = locations[random.randint(0, len(locations) - 1)]
             char_to_replace = strval[location]
             replace_with = en_default.get_random_visually_similar_char(char_to_replace)
-            self.result = firstpres + strval[:location] + replace_with + strval[location + 1:] + lastpres
+            self.result = strval[:location] + replace_with + strval[location + 1:]
         return self
 
     def skipped_space(self):
