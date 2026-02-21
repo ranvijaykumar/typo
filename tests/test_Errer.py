@@ -4,9 +4,25 @@ import datetime
 
 
 class TestStrErrer(TestCase):
+    def test_repr(self):
+        self.assertEqual(repr(typo.StrErrer('hello')), 'hello')
+        self.assertEqual(repr(typo.StrErrer('')), '')
+        self.assertEqual(repr(typo.StrErrer('Hello World!')), 'Hello World!')
+
+    def test_method_chaining(self):
+        # Chaining two methods should work and return a StrErrer instance
+        result = typo.StrErrer('hello', seed=1).char_swap().missing_char()
+        self.assertIsInstance(result, typo.StrErrer)
+        self.assertEqual(result.result, 'hlel')
+        # Chain three methods
+        result2 = typo.StrErrer('Hello World', seed=3).char_swap().repeated_char()
+        self.assertIsInstance(result2, typo.StrErrer)
+        self.assertEqual(result2.result, 'Helol Worldd')
+
     def test_char_swap(self):
         self.assertEqual(typo.StrErrer('', seed=1).char_swap().result, '')
         self.assertEqual(typo.StrErrer(' ', seed=1).char_swap().result, ' ')
+        self.assertEqual(typo.StrErrer('!!!', seed=1).char_swap().result, '!!!')
         self.assertEqual(typo.StrErrer('a', seed=1).char_swap().result, 'a')
         self.assertEqual(typo.StrErrer('ab', seed=1).char_swap().result, 'ba')
         self.assertEqual(typo.StrErrer('abc', seed=1).char_swap().result, 'bac')
@@ -31,6 +47,8 @@ class TestStrErrer(TestCase):
         self.assertEqual(typo.StrErrer('', seed=1).missing_char().result, '')
         self.assertEqual(typo.StrErrer('', seed=1).missing_char(preservefirst=True, preservelast=True).result, '')
         self.assertEqual(typo.StrErrer('  ', seed=1).missing_char().result, '  ')
+        # Single word char surrounded by non-word chars is not removed (need >1 word char)
+        self.assertEqual(typo.StrErrer('!a!', seed=1).missing_char().result, '!a!')
         self.assertEqual(typo.StrErrer('a', seed=1).missing_char().result, 'a')
         self.assertEqual(typo.StrErrer('ab', seed=1).missing_char().result, 'b')
         self.assertEqual(typo.StrErrer('abcdefgh', seed=1).missing_char().result, 'abdefgh')
@@ -106,6 +124,8 @@ class TestStrErrer(TestCase):
 
     def test_similar_char(self):
         self.assertEqual(typo.StrErrer('', seed=1).similar_char().result, '')
+        # Characters not in the similarity map are returned unchanged
+        self.assertEqual(typo.StrErrer('!', seed=1).similar_char().result, '!')
         self.assertEqual(typo.StrErrer('Z', seed=1).similar_char().result, '2')
         self.assertEqual(typo.StrErrer('2021', seed=1).similar_char().result, '2D21')
         self.assertEqual(typo.StrErrer('Hello world! Happy new year 2021.', seed=1).similar_char().result,
@@ -117,12 +137,16 @@ class TestStrErrer(TestCase):
         self.assertEqual(typo.StrErrer('', seed=1).skipped_space().result, '')
         self.assertEqual(typo.StrErrer(' ', seed=1).skipped_space().result, '')
         self.assertEqual(typo.StrErrer('  ', seed=1).skipped_space().result, ' ')
+        # String with no spaces is unchanged
+        self.assertEqual(typo.StrErrer('hello', seed=1).skipped_space().result, 'hello')
         self.assertEqual(typo.StrErrer('Hello world!', seed=1).skipped_space().result, 'Helloworld!')
         self.assertEqual(typo.StrErrer('Hello world! Happy new year 2021.', seed=5).skipped_space().result,
                          'Hello world! Happy new year2021.')
 
     def test_random_space(self):
         self.assertEqual(typo.StrErrer('', seed=1).random_space().result, '')
+        # String consisting only of spaces is unchanged (no non-space positions to insert at)
+        self.assertEqual(typo.StrErrer('   ', seed=1).random_space().result, '   ')
         self.assertEqual(typo.StrErrer(' ', seed=1).random_space().result, ' ')
         self.assertEqual(typo.StrErrer('a', seed=1).random_space().result, ' a')
         self.assertEqual(typo.StrErrer('ab', seed=5).random_space().result, 'a b')
@@ -144,6 +168,8 @@ class TestStrErrer(TestCase):
         self.assertEqual(typo.StrErrer('', seed=1).unichar().result, '')
         self.assertEqual(typo.StrErrer(' ', seed=1).unichar().result, ' ')
         self.assertEqual(typo.StrErrer('  ', seed=1).unichar().result, ' ')
+        # String with no consecutive repeated characters is unchanged
+        self.assertEqual(typo.StrErrer('abcde', seed=1).unichar().result, 'abcde')
         self.assertEqual(typo.StrErrer('aa', seed=1).unichar().result, 'a')
         self.assertEqual(typo.StrErrer('apple', seed=1).unichar().result, 'aple')
         self.assertEqual(typo.StrErrer('aaabbbccc', seed=5).unichar().result, 'aaabbbcc')
@@ -154,6 +180,12 @@ class TestStrErrer(TestCase):
 
 
 class TestIntErrer(TestCase):
+    def test_non_integer_raises(self):
+        with self.assertRaises(Exception):
+            typo.IntErrer('hello')
+        with self.assertRaises(Exception):
+            typo.IntErrer(3.14)
+
     def test_digit_swap(self):
         self.assertEqual(typo.IntErrer(0, seed=1).digit_swap().result, 0)
         self.assertEqual(typo.IntErrer(1, seed=2).digit_swap().result, 1)
@@ -286,8 +318,23 @@ class TestIntErrer(TestCase):
 
 
 class TestDateErrer(TestCase):
+    def test_non_datetime_raises(self):
+        with self.assertRaises(Exception):
+            typo.DateErrer('2021-01-01')
+        with self.assertRaises(Exception):
+            typo.DateErrer(20210101)
+
     def test_date_month_swap(self):
         self.assertEqual(typo.DateErrer(datetime.datetime.strptime("8 Mar 95", "%d %b %y"),
                                         seed=1).date_month_swap().result, datetime.datetime(1995, 8, 3, 0, 0))
         self.assertEqual(typo.DateErrer(datetime.datetime.strptime("18 Mar 95", "%d %b %y"),
                                         seed=1).date_month_swap().result, datetime.datetime(1995, 3, 18, 0, 0))
+        # Boundary: day=12 should swap (12 < 13)
+        self.assertEqual(typo.DateErrer(datetime.datetime(2021, 3, 12), seed=1).date_month_swap().result,
+                         datetime.datetime(2021, 12, 3, 0, 0))
+        # Boundary: day=13 should NOT swap (13 is not < 13)
+        self.assertEqual(typo.DateErrer(datetime.datetime(2021, 3, 13), seed=1).date_month_swap().result,
+                         datetime.datetime(2021, 3, 13, 0, 0))
+        # Time component is preserved after swap
+        self.assertEqual(typo.DateErrer(datetime.datetime(2021, 3, 8, 14, 30, 45), seed=1).date_month_swap().result,
+                         datetime.datetime(2021, 8, 3, 14, 30, 45))
